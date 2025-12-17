@@ -1,144 +1,196 @@
-<header>
-<h1 style="text-align: center; margin: 3% 0 3% 0">
-    <img src="header-dark.svg#gh-dark-mode-only" width="400px" height="88.15px" style="max-width: min(90%, 400px, calc(100vw - 80px));">
-    <img src="header.svg#gh-light-mode-only" width="400px" height="88.15px" style="max-width: min(90%, 400px, calc(100vw - 80px));">
-</h1>
-</header>
+/* Подключение библиотек */
+#include <cstdlib>
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include <ctype.h>
 
-# 
+/* Прототипы функций */
+int calculate_age(int bd, int bm, int by, int cd, int cm, int cy);
+int is_leap_year(int year);
+int is_valid_date(int day, int month, int year);
 
-Mingw-w64 is a collection of header files, import libraries, libraries and tools
-that, when combined with a compiler toolchain, such as GCC or LLVM, provides a
-complete development environment for building native Windows applications and
-libraries.
+/* Главная функция */
+int main(int argc, char *argv[])
+{
+ 
+/* Настройка консоли для русского языка */
+    system("@echo off");
+    system("chcp 1251 >nul");
+    
+    char birth_date[11], current_date[11];
+    int birth_day, birth_month, birth_year;
+    int current_day, current_month, current_year;
+    int age;
+    char ending[10];
+    
+    printf("ПРОГРАММА ДЛЯ ВЫЧИСЛЕНИЯ ВОЗРАСТА\n\n");
+    
+/* Ввод даты рождения */
+    printf("Введите дату рождения (дд.мм.гггг): ");
+    scanf("%10s", birth_date);
+    
+/* Ввод текущей даты */
+    printf("Введите текущую дату (дд.мм.гггг): ");
+    scanf("%10s", current_date);
+    
+/* Проверка формата ввода */
+    if(strlen(birth_date) != 10 || strlen(current_date) != 10)
+    {
+        printf("Ошибка! Формат: дд.мм.гггг (10 символов)\n");
+        printf("\nДля завершения программы нажмите любую клавишу...\n");
+        getch();
+        return EXIT_FAILURE;
+    }
+    
+if(birth_date[2] != '.' || birth_date[5] != '.' || 
+ current_date[2] != '.' || current_date[5] != '.')
+    {
+        printf("Ошибка! Используйте точки как разделители\n");
+        printf("\nДля завершения программы нажмите любую клавишу...\n");
+        getch();
+        return EXIT_FAILURE;
+    }
+    
+/* Преобразование строк в числа */
+    char day_str[3], month_str[3], year_str[5];
+    
+/* Для даты рождения */
+    day_str[0] = birth_date[0]; day_str[1] = birth_date[1]; day_str[2] = '\0';
+    month_str[0] = birth_date[3]; month_str[1] = birth_date[4]; month_str[2] = '\0';
+    year_str[0] = birth_date[6]; year_str[1] = birth_date[7]; 
+    year_str[2] = birth_date[8]; year_str[3] = birth_date[9]; year_str[4] = '\0';
+    
+    birth_day = atoi(day_str);
+    birth_month = atoi(month_str);
+    birth_year = atoi(year_str);
+    
+/* Для текущей даты */
+    day_str[0] = current_date[0]; day_str[1] = current_date[1]; day_str[2] = '\0';
+    month_str[0] = current_date[3]; month_str[1] = current_date[4]; month_str[2] = '\0';
+    year_str[0] = current_date[6]; year_str[1] = current_date[7];
+    year_str[2] = current_date[8]; year_str[3] = current_date[9]; year_str[4] = '\0';
+    
+    current_day = atoi(day_str);
+    current_month = atoi(month_str);
+    current_year = atoi(year_str);
+    
+/* Проверка корректности дат */
+    if(!is_valid_date(birth_day, birth_month, birth_year))
+    {
+        printf("Ошибка! Некорректная дата рождения\n");
+        printf("\nДля завершения программы нажмите любую клавишу...\n");
+        getch();
+        return EXIT_FAILURE;
+    }
+    
+    
 
-Mingw-w64 is an advancement of the original mingw.org project, which was created
-to support the GCC compiler on Windows systems. It was forked in 2007 in order
-to provide 64-bit support and newer APIs. It has since then gained wide use and
-distribution.
 
-**Headers and Libraries:**
 
-- More than a million lines of headers are provided, not counting generated ones,
-  and regularly expanded to track new Windows APIs.
-- Everything needed for linking and running your code on Windows.
-- Better-conforming and faster math support compared to VisualStudio's.
+if(!is_valid_date(current_day, current_month, current_year))
+    {
+        printf("Ошибка! Некорректная текущая дата\n");
+        printf("\nДля завершения программы нажмите любую клавишу...\n");
+        getch();
+        return EXIT_FAILURE;
+    }
+    
+/* Проверка порядка дат */
+    if(birth_year > current_year || 
+       (birth_year == current_year && birth_month > current_month) || 
+       (birth_year == current_year && birth_month == current_month && 
+        birth_day > current_day))
+    {
+        printf("Ошибка! Дата рождения позже текущей даты\n");
+        printf("\nДля завершения программы нажмите любую клавишу...\n");
+        getch();
+        return EXIT_FAILURE;
+    }
+    
+/* Вычисление возраста с помощью пользовательской функции */
+    age = calculate_age(birth_day, birth_month, birth_year,
+                        current_day, current_month, current_year);
+    
+/* Выбор правильной формы слова */
+    if(age % 100 >= 11 && age % 100 <= 14)
+    {
+        strcpy(ending, "лет");
+    }
+    else if(age % 10 == 1)
+    {
+        strcpy(ending, "год");
+    }
+    else if(age % 10 >= 2 && age % 10 <= 4)
+    {
+        strcpy(ending, "года");
+    }
+    else
+    {
+        strcpy(ending, "лет");
+    }
 
-**Runtime Libraries:**
+/* Вывод результата */
+  
 
-- Winpthreads, a pthreads library for C++11 threading support and simple
-  integration with existing project.
-- Winstorecompat, a work-in-progress convenience library that eases conformance
-  with the Windows Store.
 
-**Tools:**
+    printf("\n========================================\n");
+    printf("               РЕЗУЛЬТАТ               \n");
+    printf("========================================\n");
+    printf("          Возраст: %d %s\n", age, ending);
+    printf("========================================\n");
+    
+/* Завершение программы*/
+    printf("\nДля завершения программы нажмите любую клавишу...\n");
+    getch();
+    return EXIT_SUCCESS;
+}
 
-- gendef: generate Visual Studio .def files from .dll files.
-- genidl: generate .idl files from .dll files.
-- widl: compile .idl files.
+/* ПОЛЬЗОВАТЕЛЬСКАЯ ФУНКЦИЯ Вычисление возраста в полных годах */
+int calculate_age(int bd, int bm, int by, int cd, int cm, int cy)
+{
+    int age = cy - by;
+    
+/* Если день рождения еще не наступил в текущем году */
+    if(cm < bm || (cm == bm && cd < bd))
+    {
+        age--;
+    }
+    
+    return age;
+}
 
-## Project Collaborations
+/* Функция проверки високосного года */
+int is_leap_year(int year)
+{
+    return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+}
 
-Mingw-w64 interacts a lot with other projects in order to help everyone move
-forward. Contributions have been going to and coming from these projects:
+/* Функция проверки корректности даты */
+int is_valid_date(int day, int month, int year)
+{
 
-<table>
-<tr>
-<td style="text-align: center">
-    <a href="https://cygwin.com" class="media" title="https://cygwin.com"><img src="./logos/cygwin-logo.png" title="Cygwin" width="64" height="64" alt="Cygwin" />
-    <br>Cygwin
-    </a>
-</td>
-<td style="text-align: center">
-    <a href="https://reactos.org/" class="media" title="https://reactos.org/"><img src="./logos/reactos-logo.png" title="ReactOS" width="116" height="64" alt="ReactOS" />
-    <br>
-    ReactOS
-    </a>
-</td>
-<td style="text-align: center">
-    <a href="https://winehq.org" class="media" title="https://winehq.org"><img src="./logos/wine-logo.png" title="Wine" width="40" height="64" alt="Wine" />
-    <br>
-    Wine
-    </a>
-</td>
-<td style="text-align: center">
-    <a href="https://www.msys2.org" class="media" title="https://www.msys2.org"><img src="./logos/msys2-logo.png" title="MSYS2" width="64" height="64" alt="MSYS2" />
-    <br>
-    MSYS2
-    </a>
-</td>
-</tr>
-</table>
+/* Проверка диапазонов */
+    if(year < 1900 || year > 2100) return 0;
+    if(month < 1 || month > 12) return 0;
+    
+/* Количество дней в месяцах */
+    int days_in_month[] = {31, 28, 31, 30, 31, 30, 
+                           31, 31, 30, 31, 30, 31};
+    
+    
 
-## Projects using mingw-w64
-
-- [Fedora cross-compiler](https://fedoraproject.org/wiki/MinGW)
-- [Npackd](https://npackd.appspot.com)
-- [OpenSUSE](https://opensuse.org)
-- [Win-builds](https://win-builds.org)
-- [Barchart-UDT](https://code.google.com/p/barchart-udt/)
-- [Blender](https://www.blender.org/)
-- [Boost](https://www.boost.org/)
-- [Botan](https://botan.randombit.net/)
-- [Code::Blocks](https://www.codeblocks.org/)
-- [Crown Engine](https://www.crownengine.org/)
-- [DAE Tools](https://daetools.sourceforge.net)
-- [devkitPro](https://devkitpro.org/)
-- [Disk Based HashTables](https://sourceforge.net/projects/dbh/)
-- [Ecere SDK](https://www.ecere.org/)
-- [Ekiga](https://www.ekiga.org/)
-- [Emerge Desktop](https://emergedesktop.org)
-- [Enlightenment](https://www.enlightenment.org/)
-- [Factor](https://factorcode.org/)
-- [FFmpeg](https://ffmpeg.mplayerhq.hu/)
-- [FLTK](https://www.fltk.org/)
-- [Freecell Solver](https://fc-solve.shlomifish.org/)
-- [Freeverb3](https://freeverb3.sourceforge.net/)
-- [GCC: The GNU Compiler Collection](https://gcc.gnu.org/)
-- [GDB: The GNU Project Debugger](https://www.gnu.org/software/gdb/)
-- [GIMP](https://www.gimp.org)
-- [GNU Binutils](https://www.gnu.org/software/binutils/)
-- [GNU SASL](https://www.gnu.org/software/gsasl/)
-- [GnuTLS](https://www.gnu.org/software/gnutls/)
-- [GraphicsMagick](http://www.graphicsmagick.org/)
-- [GTK+](https://www.gtk.org/docs/installations/windows)
-- [Hexen II: Hammer of Thyrion](https://uhexen2.sf.net/)
-- [ImageMagick](https://www.imagemagick.org/)
-- [JPen](https://jpen.sf.net/)
-- [Kotlin](https://kotlinlang.org)
-- [KDE Software Collection](https://kde.org/)
-- [LibreOffice](https://www.libreoffice.org/)
-- [libsndfile](http://www.mega-nerd.com/libsndfile/)
-- [libvirt](https://libvirt.org/)
-- [libvpx](https://www.webmproject.org/)
-- [Libxml2](https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home)
-- [MAME (Yes, the arcade emulator!)](https://mamedev.org/)
-- [ManKai Common Lisp](https://common-lisp.net/project/mkcl/)
-- [mpg123](https://www.mpg123.de/)
-- [MS MPI](https://www.symscape.com/configure-msmpi-for-mingw-w64)
-- [OCaml](https://www.ocaml.org)
-- [OpenFOAM](https://www.symscape.com/openfoam-1-7-x-on-windows-64-mpi)
-- [OpenLisp](https://www.eligis.com/)
-- [OpenSSL](https://www.openssl.org/)
-- [OpenTURNS](https://openturns.github.io/www/)
-- [Perl (5.12.0 and later)](https://www.perl.org/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [pthreads](https://sourceware.org/pthreads-win32/)
-- [PToolsWin](https://www.paratools.com/PToolsWIN)
-- [QEMU](https://qemu.org)
-- [Qt](https://qt-project.org/)
-- [QuakeSpasm](https://quakespasm.sourceforge.net/)
-- [ReMooD](https://remood.sf.net/)
-- [Smart Image Denoiser](http://smartimagedenoiser.com/)
-- [smartmontools](https://smartmontools.sourceforge.net/)
-- [Strawberry Perl (bundles C toolchains)](https://strawberryperl.com/)
-- [strongSwan](https://strongswan.org/)
-- [The R Project for Statistical Computing](https://www.r-project.org/)
-- [VideoLAN VLC](https://www.videolan.org/vlc/)
-- [VSXu](https://www.vsxu.com/)
-- [Woo](https://www.woodem.eu/)
-- [wxWidgets](https://www.wxwidgets.org/)
-- [YafaRay](https://www.yafaray.org/)
-- [zlib](https://www.zlib.net/)
-
-*Feel free to add your project to this list!*
+/* Корректировка для февраля в високосный год */
+    if(month == 2 && is_leap_year(year))
+    {
+        days_in_month[1] = 29;
+    }
+    
+    /* Проверка дня */
+    if(day < 1 || day > days_in_month[month - 1])
+    {
+        return 0;
+    }
+    
+    return 1;
+}    
